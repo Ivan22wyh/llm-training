@@ -50,8 +50,8 @@ def list_directories(path):
         if os.path.isdir(full_path):
             directories.append(full_path)
 
-    directories[2] = '/mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy'
-    directories[4] = '/mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy'
+    #directories[2] = '/mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy'
+    #directories[4] = '/mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy'
     return directories
 
 def random_files(path, total_train_file_path, num_files=15):
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     for data in data_path:
         total_file_size += count_files_and_size(data)
-        total_train_file_path = random_files(data, total_train_file_path, num_files=20)
+        total_train_file_path = random_files(data, total_train_file_path, num_files=500)
         print('\n')
 
     print(total_file_size)
