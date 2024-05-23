@@ -1,0 +1,250 @@
+run_name: OLMo-0.3B-test
+seed: 6198
+dry_run: false
+
+# wandb:
+#   name: ${run_name}
+#   project: my-olmo-mixings-v3
+#   entity: fulvwen
+
+model:
+  d_model: 1024
+  n_heads: 16
+  n_layers: 8
+  mlp_ratio: 8
+  weight_tying: false
+  alibi: false
+  rope: true
+  flash_attention: true  # not available on AMD
+  attention_dropout: 0.0
+  attention_layer_norm: false
+  multi_query_attention: false
+  include_bias: false
+  block_type: sequential
+  layer_norm_type: default
+  layer_norm_with_affine: false
+  bias_for_layer_norm: false
+  attention_layer_norm_with_affine: false
+  activation_type: swiglu
+  residual_dropout: 0.0
+  embedding_dropout: 0.0
+  max_sequence_length: 2048
+  vocab_size: 50280
+  embedding_size: 50304
+  eos_token_id: 0
+  pad_token_id: 1
+  init_device: meta
+  init_fn: mitchell
+
+# compile: null  # causes instability on AMD GPUs
+compile:
+  backend: inductor
+
+optimizer:
+  name: adamw
+  learning_rate: 4.0e-4
+  weight_decay: 0.1
+  betas:
+  - 0.9
+  - 0.95
+  metrics_log_interval: 10
+
+scheduler:
+  name: cosine_with_warmup
+  t_warmup: 2000
+  alpha_f: 0.1
+
+tokenizer:
+  identifier: /mnt/geogpt-gpfs/llm-course/home/lfu/OLMo/tokenizers/allenai_eleuther-ai-gpt-neox-20b-pii-special.json
+  truncate_direction: right
+
+#save_folder: ${path.choose:${oc.env:SCRATCH_DIR,no_exist}/checkpoints,/results}/${oc.env:SLURM_JOB_ID,${run_name}}
+save_folder: /mnt/geogpt-gpfs/llm-course/home/wenyh/output
+save_overwrite: true
+# Sharded checkpoints (best for restarts)
+save_interval: 1000
+save_num_checkpoints_to_keep: 9
+# Unsharded checkpoints (for final storage)
+save_interval_unsharded: 10000
+save_num_unsharded_checkpoints_to_keep: -1
+
+load_path: null
+sharded_checkpointer: torch_legacy
+
+# 7 days time limit
+time_limit: 604800.0
+
+max_duration: 739_328  # 3.1T tokens
+global_train_batch_size: 2048
+device_train_microbatch_size: 8
+# device_train_microbatch_size: 16
+
+precision: amp_bf16
+
+fsdp:
+  precision: mixed
+  # wrapping_strategy: null
+  # wrapping_strategy: size_based
+  wrapping_strategy: by_block
+  sharding_strategy: SHARD_GRAD_OP
+
+max_grad_norm: 1.0
+max_grad_norm_ratio: null
+
+speed_monitor:
+  window_size: 20
+
+eval_interval: ${save_interval}
+eval_subset_num_batches: -1
+# device_eval_batch_size: 8
+device_eval_batch_size: ${device_train_microbatch_size}
+
+data:
+  pad_direction: right
+  num_workers: 0
+  drop_last: true
+  pin_memory: true
+  prefetch_factor: 16
+  persistent_workers: true
+  timeout: 0
+  paths:
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0784_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0671_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0573_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0728_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0144_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0298_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0155_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0474_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0193_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0972_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0626_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0256_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0523_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0421_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0201_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/1071_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0746_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0038_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0510_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaBook/0199_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0016_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0499_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0349_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0698_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0530_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0751_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0238_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0586_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0169_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0080_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0932_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0198_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0652_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0600_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0110_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0403_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/1057_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0949_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0758_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaStackExchange/0749_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-42-00006.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-67-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-19-00002.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-78-00005.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-75-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-06-00007.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-79-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-11-00003.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-45-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-06-00005.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-42-00008.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-15-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-25-00002.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-57-00004.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-17-00004.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-34-00006.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-11-00006.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-58-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-07-00004.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaCommonCrawl/npy/part-62-00007.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/1176_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0241_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0472_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0772_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0376_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0024_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0037_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0300_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0507_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/1103_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/1171_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/1175_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0454_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0626_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0143_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0673_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0198_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0716_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0048_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaArXiv/0019_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-016-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-082-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-069-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-060-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-036-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-021-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-109-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-057-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-109-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-003-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-088-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-004-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-102-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-010-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-018-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-076-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-038-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-002-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-046-00001.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaC4/npy/part-120-00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0490_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0975_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0632_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0478_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0681_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0692_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0549_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/1043_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/1109_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0991_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0523_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/1146_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/1151_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/1182_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0398_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0714_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0678_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0531_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/0153_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaGithub/1129_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0766_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0515_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0769_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0930_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0489_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0539_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0329_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0983_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/1022_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0211_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0692_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0523_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0847_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0615_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0552_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0425_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/1057_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0264_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0400_00000.npy
+  - /mnt/geogpt-gpfs/llm-course/public/datasets/npy_data/RedPajamaWikipedia/0244_00000.npy
