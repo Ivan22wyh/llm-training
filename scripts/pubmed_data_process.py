@@ -8,6 +8,27 @@ import pandas as pd
 collection = "pubmed"
 issn_map = pickle.load(open(f"../data/fasttext/input/raw_data/issn_dict.pkl", "rb"))
 
+FoR_file = "../data/fasttext/input/raw_data/FoR.xlsx"
+xl = pd.ExcelFile(FoR_file)
+df_issn = xl.parse("ERA 2018 Journal List")
+df_for = xl.parse("FoR Codes")
+for_dict = {}
+for_dict2 = {}
+for i, row in df_for.iterrows():
+    for_code = str(row['FoR Code']).strip()
+    if len(for_code) == 1:
+        for_code = "0"+for_code
+    if len(for_code) == 3:
+        for_code = "0"+for_code
+    if len(for_code) not in [2, 4]:
+        continue
+    description = row['FoR Description'].strip()
+    for_dict[for_code] = description
+    for_dict2[description] = for_code
+for_dict['MD'] = "Multidisciplinary"
+for_dict2['Multidisciplinary'] = 'MD'
+
+
 for is_stratified in [True, False]:
 
     if is_stratified:
@@ -26,23 +47,20 @@ for is_stratified in [True, False]:
     for elt in data:
 
         all_fields, all_fields_health = [], []
-        for issn in [e.get('issn_electronic'), e.get('issn_print')]:
-            if issn in issn_dict:
-                all_fields += issn_dict[issn]
-            if issn in issn_dict_health:
-                all_fields_health += issn_dict_health[issn]
+        for issn in [elt.get('issn_electronic'), elt.get('issn_print')]:
+            if issn in issn_map:
+                all_fields += issn_map[issn]
             
-        e['fields'] = all_fields
-        e['fields_health'] = all_fields_health
-    
+        elt['fields'] = all_fields
+ 
         for_codes4 = []
         for_codes2 = []
         for f in all_fields:
             if len(for_dict2[f]) == 4:
                 for_codes4.append(for_dict2[f])
             for_codes2.append(for_dict2[f][0:2])
-        e['for_codes4'] = list(set(for_codes4))
-        e['for_codes2'] = list(set(for_codes2))
+        elt['for_codes4'] = list(set(for_codes4))
+        elt['for_codes2'] = list(set(for_codes2))
 
         if '_id' in elt:
             del elt['_id']
@@ -65,7 +83,7 @@ for is_stratified in [True, False]:
             outfile[f].close()
 
         for f in ['title', 'abstract', 'keywords', 'mesh_headings', 'journal_title']:
-            outfile[f] = open(f"../data/fasttext/input/train_data{collection}_{data_type}_{f}_strat{is_stratified}.txt", "w+", encoding='utf-8')
+            outfile[f] = open(f"../data/fasttext/input/train_data/{collection}_{data_type}_{f}_strat{is_stratified}.txt", "w+", encoding='utf-8')
             print(f, flush=True)
 
             if data_type == "train":
@@ -94,17 +112,21 @@ for is_stratified in [True, False]:
                     continue
 
                 #current_words = normalize(current_words)
-
+                labels = []
                 #labels = ["__label__" + label.replace(' ','_') for label in elt.get('labels_text', [])]
                 for label_code, sublabel_code in zip(elt.get('for_codes2'), elt.get('for_codes4')):
-                    if sublabel_code == '0201': label = 'astro'
-                    elif label_code in ['1', '2', '3', '4']: label = 'astro_related'
-                    else: label = 'non_astro'
+                    if sublabel_code == '0201': labels.append('astro')
+                    elif label_code in ['01', '02', '03', '04']: labels.append('astro_related')
+                    else: labels.append('non_astro')
 
+                if 'astro' in labels: label = 'astro'
+                elif 'astro_related' in labels: label = 'astro_related'
+                elif random.random()<0.9: continue
+                else: label = 'non_astro'
 
                 #tags = " ".join(labels)
 
-                newline = current_words + " " + label + "\n"
+                newline = current_words + " " + "__label__" + label + "\n"
 
                 outfile[f].write(newline)
         outfile[f].close()
