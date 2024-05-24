@@ -1,6 +1,4 @@
 import random
-from urllib.request import HTTPCookieProcessor
-from ray import get
 from sklearn.model_selection import train_test_split
 import pickle
 import pandas as pd
