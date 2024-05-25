@@ -46,10 +46,13 @@ def get_file_size(file_path):
     else:
         return "文件不存在"
 
+        
+
 if __name__ == '__main__':
     wiki_gz = get_all_gz_files('/mnt/geogpt-gpfs/llm-course/public/datasets/dolma_v1_7/wiki/documents')
+    #print(wiki_gz)
     content = read_gz(wiki_gz[152])
-    print((content[833]))
-    print(len(wiki_gz), len(content))
+    #print(json.dumps(content[833], indent=4))
+    #print(len(wiki_gz), len(content))
 
-    print(get_file_size(wiki_gz[152]))
+    #print(get_file_size(wiki_gz[152]))

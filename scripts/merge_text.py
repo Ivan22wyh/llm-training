@@ -34,8 +34,8 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Shuffle sentences from txt files and write to a new txt file")
-    parser.add_argument("--input_dir", type=str, default="../output/", help="Input directory containing txt files (default: 'input')")
-    parser.add_argument("--output_dir", type=str, default="../output/train_data.txt", help="Output file path for shuffled sentences (default: 'output.txt')")
+    parser.add_argument("--input_dir", type=str, help="Input directory containing txt files (default: 'input')")
+    parser.add_argument("--output_dir", type=str, help="Output file path for shuffled sentences (default: 'output.txt')")
     args = parser.parse_args()
     
     main(args)
