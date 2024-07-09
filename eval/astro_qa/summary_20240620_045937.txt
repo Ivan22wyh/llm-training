@@ -1,0 +1,116 @@
+20240620_045937
+tabulate format
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dataset            version    metric     mode    high-energy-2b
+-----------------  ---------  ---------  ------  ----------------
+planet_qa          359d58     rouge1     gen     22.04
+planet_qa          359d58     rouge2     gen     8.29
+planet_qa          359d58     rougeL     gen     18.19
+planet_qa          359d58     rougeLsum  gen     20.07
+astrochemistry_qa  359d58     rouge1     gen     39.78
+astrochemistry_qa  359d58     rouge2     gen     17.45
+astrochemistry_qa  359d58     rougeL     gen     25.77
+astrochemistry_qa  359d58     rougeLsum  gen     26.75
+astrometry_qa      359d58     rouge1     gen     21.41
+astrometry_qa      359d58     rouge2     gen     9.22
+astrometry_qa      359d58     rougeL     gen     16.20
+astrometry_qa      359d58     rougeLsum  gen     16.40
+cosmology_qa       359d58     rouge1     gen     38.29
+cosmology_qa       359d58     rouge2     gen     16.65
+cosmology_qa       359d58     rougeL     gen     26.25
+cosmology_qa       359d58     rougeLsum  gen     28.69
+galaxy_qa          359d58     rouge1     gen     27.07
+galaxy_qa          359d58     rouge2     gen     12.99
+galaxy_qa          359d58     rougeL     gen     23.72
+galaxy_qa          359d58     rougeLsum  gen     24.04
+gaoneng_qa         359d58     rouge1     gen     35.78
+gaoneng_qa         359d58     rouge2     gen     22.94
+gaoneng_qa         359d58     rougeL     gen     32.66
+gaoneng_qa         359d58     rougeLsum  gen     32.80
+hengxing_qa        359d58     rouge1     gen     18.56
+hengxing_qa        359d58     rouge2     gen     9.45
+hengxing_qa        359d58     rougeL     gen     14.89
+hengxing_qa        359d58     rougeLsum  gen     14.94
+radio_qa           359d58     rouge1     gen     34.66
+radio_qa           359d58     rouge2     gen     15.26
+radio_qa           359d58     rougeL     gen     26.17
+radio_qa           359d58     rougeLsum  gen     26.35
+solar_qa           359d58     rouge1     gen     22.40
+solar_qa           359d58     rouge2     gen     10.18
+solar_qa           359d58     rougeL     gen     18.00
+solar_qa           359d58     rougeLsum  gen     18.28
+astrometry_mcq     -          -          -       -
+cosmology_mcq      -          -          -       -
+galaxy_mcq         -          -          -       -
+gaoneng_mcq        -          -          -       -
+hengxing_mcq       -          -          -       -
+radio_mcq          -          -          -       -
+solar_mcq          -          -          -       -
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+-------------------------------------------------------------------------------------------------------------------------------- THIS IS A DIVIDER --------------------------------------------------------------------------------------------------------------------------------
+
+csv format
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dataset,version,metric,mode,high-energy-2b
+planet_qa,359d58,rouge1,gen,22.04
+planet_qa,359d58,rouge2,gen,8.29
+planet_qa,359d58,rougeL,gen,18.19
+planet_qa,359d58,rougeLsum,gen,20.07
+astrochemistry_qa,359d58,rouge1,gen,39.78
+astrochemistry_qa,359d58,rouge2,gen,17.45
+astrochemistry_qa,359d58,rougeL,gen,25.77
+astrochemistry_qa,359d58,rougeLsum,gen,26.75
+astrometry_qa,359d58,rouge1,gen,21.41
+astrometry_qa,359d58,rouge2,gen,9.22
+astrometry_qa,359d58,rougeL,gen,16.20
+astrometry_qa,359d58,rougeLsum,gen,16.40
+cosmology_qa,359d58,rouge1,gen,38.29
+cosmology_qa,359d58,rouge2,gen,16.65
+cosmology_qa,359d58,rougeL,gen,26.25
+cosmology_qa,359d58,rougeLsum,gen,28.69
+galaxy_qa,359d58,rouge1,gen,27.07
+galaxy_qa,359d58,rouge2,gen,12.99
+galaxy_qa,359d58,rougeL,gen,23.72
+galaxy_qa,359d58,rougeLsum,gen,24.04
+gaoneng_qa,359d58,rouge1,gen,35.78
+gaoneng_qa,359d58,rouge2,gen,22.94
+gaoneng_qa,359d58,rougeL,gen,32.66
+gaoneng_qa,359d58,rougeLsum,gen,32.80
+hengxing_qa,359d58,rouge1,gen,18.56
+hengxing_qa,359d58,rouge2,gen,9.45
+hengxing_qa,359d58,rougeL,gen,14.89
+hengxing_qa,359d58,rougeLsum,gen,14.94
+radio_qa,359d58,rouge1,gen,34.66
+radio_qa,359d58,rouge2,gen,15.26
+radio_qa,359d58,rougeL,gen,26.17
+radio_qa,359d58,rougeLsum,gen,26.35
+solar_qa,359d58,rouge1,gen,22.40
+solar_qa,359d58,rouge2,gen,10.18
+solar_qa,359d58,rougeL,gen,18.00
+solar_qa,359d58,rougeLsum,gen,18.28
+astrometry_mcq,-,-,-,-
+cosmology_mcq,-,-,-,-
+galaxy_mcq,-,-,-,-
+gaoneng_mcq,-,-,-,-
+hengxing_mcq,-,-,-,-
+radio_mcq,-,-,-,-
+solar_mcq,-,-,-,-
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+-------------------------------------------------------------------------------------------------------------------------------- THIS IS A DIVIDER --------------------------------------------------------------------------------------------------------------------------------
+
+raw format
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------
+Model: high-energy-2b
+planet_qa: {'rouge1': 22.04325658271909, 'rouge2': 8.288859420991598, 'rougeL': 18.193799744114653, 'rougeLsum': 20.071239490741515}
+astrochemistry_qa: {'rouge1': 39.777061039036674, 'rouge2': 17.45346253676503, 'rougeL': 25.77290812249412, 'rougeLsum': 26.751885111118124}
+astrometry_qa: {'rouge1': 21.413123954220993, 'rouge2': 9.217139884484622, 'rougeL': 16.203471065920656, 'rougeLsum': 16.40453515215683}
+cosmology_qa: {'rouge1': 38.291233546234515, 'rouge2': 16.65174230295053, 'rougeL': 26.252391999233232, 'rougeLsum': 28.69350840871566}
+galaxy_qa: {'rouge1': 27.068444685287375, 'rouge2': 12.989382830917082, 'rougeL': 23.724369572278288, 'rougeLsum': 24.03584254226052}
+gaoneng_qa: {'rouge1': 35.780751688307554, 'rouge2': 22.93743737238839, 'rougeL': 32.66305232684743, 'rougeLsum': 32.80064551313231}
+hengxing_qa: {'rouge1': 18.562058121317648, 'rouge2': 9.448175638194718, 'rougeL': 14.886569038768481, 'rougeLsum': 14.938097357725876}
+radio_qa: {'rouge1': 34.66438359107404, 'rouge2': 15.260757575369738, 'rougeL': 26.170661899948733, 'rougeLsum': 26.350084303712496}
+solar_qa: {'rouge1': 22.395186465332525, 'rouge2': 10.183462187952392, 'rougeL': 18.001343008218356, 'rougeLsum': 18.28215362413317}
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
