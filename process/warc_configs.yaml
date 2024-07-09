@@ -1,0 +1,6 @@
+# config.yaml
+source_dir: /mnt/tianwen-course/tianwen/home/wenyh/crawler/heritrix_astro_crawler/jobs/astro_crawler # All the .warc.gz file in this path will be processed
+output_dir: /mnt/tianwen-course/tianwen/public/tianwen/crawler # All the result of WARC file processing will be stored in this path
+history_dir: /mnt/tianwen-course/tianwen/home/wenyh/crawler/output # The processing history will be stored in this path (So that you will not process the same WARC file twice)
+num_proc: 20 # Processes numbers
+num_threads: 20 # Threads numbers
